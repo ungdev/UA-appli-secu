@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:ua_app_secu/models/item.dart';
+import 'package:ua_app_secu/models/log.dart';
 import 'package:ua_app_secu/models/player.dart';
 
 class Api {
@@ -80,6 +81,13 @@ class Api {
     return json != null ? Player.fromJson(json) : null;
   }
 
+  Future<Map<String, dynamic>?> scanTicket(Uint8List code) async {
+    String codeToBase64 = base64Encode(code);
+
+    return await post("/repo/user?id=$codeToBase64", getBearerToken(),
+        jsonEncode({'qrcode': codeToBase64}));
+  }
+
   Future<Map<String, dynamic>?> addPlayerItem(
       Player player, String bearerToken, List<Item> items) async {
     return await post(
@@ -94,8 +102,13 @@ class Api {
         expectedCode: 201);
   }
 
-  Future<Map<String, dynamic>?> getLogs(Player player) async {
-    return await get("/repo/user/${player.id}/logs", getBearerToken());
+  Future<List<Log>?> getLogs(Player player) async {
+    Map<String, dynamic>? json =
+        await get("/repo/user/${player.id}/logs", getBearerToken());
+
+    return json != null
+        ? (json['logs'] as List).map((e) => Log.fromJson(e)).toList()
+        : null;
   }
 
   Future<Map<String, dynamic>?> login(String login, String password) async {

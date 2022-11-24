@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ua_app_secu/controllers/repo.dart';
+import 'package:ua_app_secu/models/log.dart';
 
 class LogsRepo extends StatefulWidget {
-  const LogsRepo({Key? key}) : super(key: key);
+  const LogsRepo({Key? key, required this.logs}) : super(key: key);
+  final List<Log> logs;
 
   @override
   State<LogsRepo> createState() => _LogsRepoState();
@@ -14,6 +16,6 @@ class _LogsRepoState extends State<LogsRepo> {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("Repo Logs");
+    return Text("Logs Repo: ${widget.logs.length}");
   }
 }

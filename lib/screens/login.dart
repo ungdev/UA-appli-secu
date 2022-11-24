@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/controllers/settings.dart';
 
@@ -33,6 +32,12 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Center(
+              child: Image.asset(
+                'assets/img/logo.png',
+                width: 200,
+              ),
+            ),
             const Text(
               "Rebonjour.",
               style: TextStyle(

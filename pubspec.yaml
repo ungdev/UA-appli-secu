@@ -41,6 +41,7 @@ dependencies:
   http: ^0.13.5
   flutter_dotenv: ^5.0.2
   get_storage: ^2.0.3
+  flutter_native_splash: ^2.2.15
 
 dev_dependencies:
   flutter_test:
@@ -80,3 +81,9 @@ flutter:
     - family: Iconsax
       fonts:
         - asset: assets/fonts/Iconsax.ttf
+
+flutter_native_splash:
+  image: assets/img/logo.png
+  color: "#FFFFFF"
+  android: true
+  ios: true

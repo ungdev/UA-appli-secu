@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
 import 'package:ua_app_secu/controllers/repo.dart';
 import 'package:ua_app_secu/controllers/settings.dart';
 import 'package:ua_app_secu/icons.dart';
 import 'package:ua_app_secu/screens/login.dart';
+import 'package:ua_app_secu/theme.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -21,9 +21,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'UA Secu',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: AppTheme().get(),
       home: const MainPageState(title: 'UA Secu Scanner'),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ua_app_secu/api.dart';
+import 'package:ua_app_secu/models/log.dart';
 import 'package:ua_app_secu/screens/repo_items.dart';
 import 'package:ua_app_secu/screens/repo_logs.dart';
 import 'package:ua_app_secu/screens/qrcode.dart';
@@ -35,9 +36,7 @@ class RepoController extends GetxController {
   }
 
   void changePage(Page newPage) async {
-    selectedPage = newPage;
-
-    switch (selectedPage) {
+    switch (newPage) {
       case Page.playerQRCode:
         currentPage = const QRCode(text: 'LE BILLET D\'UN JOUEUR');
         break;
@@ -54,9 +53,18 @@ class RepoController extends GetxController {
         currentPage = const QRCode(text: 'L\'EMPLACEMENT DE RETRAIT');
         break;
       case Page.playerLogs:
-        currentPage = const LogsRepo();
+        List<Log>? logs = await api.getLogs(player!);
+
+        if (logs != null) {
+          currentPage = LogsRepo(logs: logs);
+        } else {
+          // TODO: add error message
+          return;
+        }
         break;
     }
+
+    selectedPage = newPage;
 
     update();
   }

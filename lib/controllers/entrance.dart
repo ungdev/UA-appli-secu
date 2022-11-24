@@ -1,16 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ua_app_secu/screens/qrcode.dart';
+import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/models/player.dart';
+import 'package:ua_app_secu/screens/qrcode.dart';
 import 'package:ua_app_secu/screens/ticket_player.dart';
 
 class EntranceController extends GetxController {
   int selectedIndex = 0;
   // Player Code (via qrcode)
   Uint8List? playerCode;
-  // Player
-  Player? player;
+  // PlayerJson
+  Map<String, dynamic>? playerJson;
   // Current Page
   Widget? currentPage;
 
@@ -23,17 +24,14 @@ class EntranceController extends GetxController {
   void changePage(int newIndex) {
     selectedIndex = newIndex;
     currentPage = selectedIndex == 0
-        ? const Center(child: Text("Work In Progress"))
-        //const QRCode(text: 'LE BILLET D\'UN JOUEUR')
-        : PlayerTicket(player: player!);
+        ? const QRCode(text: 'LE BILLET D\'UN JOUEUR')
+        : PlayerTicket(data: playerJson!);
     update();
   }
 
-  void setPlayerCode(Uint8List? code) {
+  void setPlayerCode(Uint8List? code) async {
     playerCode = code;
-
-    // TODO : get player from API
-
+    playerJson = await Api().scanTicket(playerCode!);
     changePage(selectedIndex + 1);
   }
 }
