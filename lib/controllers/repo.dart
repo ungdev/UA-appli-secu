@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:ua_app_secu/api.dart';
+import 'package:ua_app_secu/controllers/scanner.dart';
 import 'package:ua_app_secu/models/log.dart';
 import 'package:ua_app_secu/screens/repo_items.dart';
 import 'package:ua_app_secu/screens/repo_logs.dart';
@@ -18,7 +20,7 @@ enum Page {
   playerLogs,
 }
 
-class RepoController extends GetxController {
+class RepoController extends GetxController implements ScannerController {
   Page selectedPage = Page.playerQRCode;
   // PlayerCode
   Uint8List? playerCode;
@@ -28,17 +30,27 @@ class RepoController extends GetxController {
   Widget? currentPage;
   // API
   Api api = Api();
+  // Scanner controller
+  @override
+  MobileScannerController? scannerController;
 
   @override
   void onInit() {
     super.onInit();
+    scannerController = MobileScannerController(
+      facing: CameraFacing.back,
+      detectionSpeed: DetectionSpeed.noDuplicates,
+      formats: [BarcodeFormat.qrCode],
+      returnImage: false,
+    );
     changePage(Page.playerQRCode);
   }
 
   void changePage(Page newPage) async {
     switch (newPage) {
       case Page.playerQRCode:
-        currentPage = const QRCode(text: 'LE BILLET D\'UN JOUEUR');
+        currentPage =
+            const QRCode<RepoController>(text: 'LE BILLET D\'UN JOUEUR');
         break;
       case Page.playerRepo:
         currentPage = PlayerRepo(player: player!);
@@ -47,10 +59,12 @@ class RepoController extends GetxController {
         currentPage = const ItemsRepo();
         break;
       case Page.playerRepoAdd:
-        currentPage = const QRCode(text: 'L\'EMPLACEMENT DE DESTINATION');
+        currentPage =
+            const QRCode<RepoController>(text: 'L\'EMPLACEMENT DE DESTINATION');
         break;
       case Page.playerRepoRemove:
-        currentPage = const QRCode(text: 'L\'EMPLACEMENT DE RETRAIT');
+        currentPage =
+            const QRCode<RepoController>(text: 'L\'EMPLACEMENT DE RETRAIT');
         break;
       case Page.playerLogs:
         List<Log>? logs = await api.getLogs(player!);
@@ -69,6 +83,7 @@ class RepoController extends GetxController {
     update();
   }
 
+  @override
   void setPlayerCode(Uint8List code) async {
     playerCode = code;
     player = await api.getPlayer(playerCode!);
@@ -76,8 +91,8 @@ class RepoController extends GetxController {
     player != null
         ? changePage(Page.playerRepo)
         : // (currentPage as QRCode).sendError('Le joueur n\'existe pas');
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-            const SnackBar(content: Text('Le joueur n\'existe pas')));
+        // TODO: add error message
+        null;
   }
 
   void addItemToRepo(location) {

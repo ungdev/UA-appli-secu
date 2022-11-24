@@ -3,19 +3,30 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ua_app_secu/controllers/repo.dart';
+import 'package:ua_app_secu/controllers/scanner.dart';
 
-class QRCode extends StatefulWidget {
-  const QRCode({Key? key, required this.text}) : super(key: key);
+class QRCode<T extends ScannerController> extends StatefulWidget {
+  const QRCode({Key? key, required this.text, this.isEntrance = false})
+      : super(key: key);
   final String text;
+  final bool isEntrance;
 
   @override
-  State<QRCode> createState() => _QRCodeState();
+  State<QRCode<T>> createState() => _QRCodeState<T>();
 }
 
-class _QRCodeState extends State<QRCode> with TickerProviderStateMixin {
+class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
+    with TickerProviderStateMixin {
   Uint8List? code;
   Color _borderColor = Colors.white;
-  RepoController controller = Get.find();
+
+  T controller = Get.find();
+  MobileScannerController scannerController = MobileScannerController(
+    facing: CameraFacing.back,
+    detectionSpeed: DetectionSpeed.noDuplicates,
+    formats: [BarcodeFormat.qrCode],
+    returnImage: false,
+  );
 
   void sendError(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -36,18 +47,31 @@ class _QRCodeState extends State<QRCode> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    // In case of page change, wait a bit before starting the camera
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scannerController.start();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(children: [
       MobileScanner(
-        allowDuplicates: false,
-        controller: MobileScannerController(facing: CameraFacing.back),
-        onDetect: (qrcode, args) {
-          if (qrcode.rawBytes == null) {
-            sendError('Erreur lors de la lecture du QRCode');
-          } else {
-            code = qrcode.rawBytes;
-            debugPrint('Barcode detected: ${String.fromCharCodes(code!)}');
-            controller.setPlayerCode(code!);
+        controller: scannerController,
+        onDetect: (capture) async {
+          final List<Barcode> barcodes = capture.barcodes;
+
+          for (final qrcode in barcodes) {
+            if (qrcode.rawBytes == null) {
+              sendError('Erreur lors de la lecture du QRCode');
+            } else {
+              code = qrcode.rawBytes;
+              debugPrint('Barcode detected: ${String.fromCharCodes(code!)}');
+              controller.setPlayerCode(code!);
+            }
           }
         },
       ),
@@ -93,7 +117,7 @@ class _QRCodeState extends State<QRCode> with TickerProviderStateMixin {
                   'SCANNEZ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.blue.shade300,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 44,
                   ),

@@ -61,8 +61,8 @@ class _MainPage extends State<MainPageState> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(RepoController());
-    Get.put(EntranceController());
+    RepoController repoController = Get.put(RepoController());
+    EntranceController entranceController = Get.put(EntranceController());
     SettingsController settingsController = Get.put(SettingsController());
 
     return settingsController.bearerToken !=
@@ -92,7 +92,7 @@ class _MainPage extends State<MainPageState> {
                 BottomNavigationBarItem(
                   activeIcon: Icon(Iconsax.settingsBold),
                   icon: Icon(Iconsax.settings),
-                  label: 'Settings',
+                  label: 'Paramètres',
                 ),
                 BottomNavigationBarItem(
                   activeIcon: Icon(Iconsax.boxBold),
@@ -102,7 +102,7 @@ class _MainPage extends State<MainPageState> {
                 BottomNavigationBarItem(
                   activeIcon: Icon(Iconsax.fingerScanBold),
                   icon: Icon(Iconsax.fingerScan),
-                  label: 'Entrance',
+                  label: 'Entrée',
                 ),
               ],
             ),
