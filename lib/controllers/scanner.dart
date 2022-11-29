@@ -5,5 +5,5 @@ class ScannerController {
   // Scanner controller
   MobileScannerController? scannerController;
 
-  void setPlayerCode(Uint8List code) async {}
+  void onScan(Uint8List code) async {}
 }

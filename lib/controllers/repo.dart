@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
+import 'package:ua_app_secu/models/item.dart';
+import 'package:ua_app_secu/models/item_type.dart';
 import 'package:ua_app_secu/models/log.dart';
 import 'package:ua_app_secu/screens/repo_items.dart';
 import 'package:ua_app_secu/screens/repo_logs.dart';
@@ -33,6 +35,30 @@ class RepoController extends GetxController implements ScannerController {
   // Scanner controller
   @override
   MobileScannerController? scannerController;
+  // Repo Items
+  List<ItemType> repoItemTypes = [
+    ItemType(
+      id: 'computer',
+      name: 'PC',
+      description: 'Ordinateur',
+    ),
+    ItemType(
+      id: 'monitor',
+      name: 'Écran PC',
+      description: 'Écran d\'ordinateur',
+    ),
+    ItemType(
+      id: 'peripheral',
+      name: 'Périphérique',
+      description: 'Clavier, souris, casque, etc.',
+    ),
+  ];
+  // Selected Item Type
+  int selectedItemType = 0;
+  // Select Item
+  Item? selectedItem;
+  // Logs
+  List<Log> logs = [];
 
   @override
   void onInit() {
@@ -84,6 +110,23 @@ class RepoController extends GetxController implements ScannerController {
   }
 
   @override
+  void onScan(Uint8List code) async {
+    switch (selectedPage) {
+      case Page.playerQRCode:
+        setPlayerCode(code);
+        break;
+      case Page.playerRepoAdd:
+        addItemToRepo(String.fromCharCodes(code));
+        break;
+      case Page.playerRepoRemove:
+        removeItemFromRepo(
+            repoItemTypes[selectedItemType].id, String.fromCharCodes(code));
+        break;
+      default:
+        break;
+    }
+  }
+
   void setPlayerCode(Uint8List code) async {
     playerCode = code;
     player = await api.getPlayer(playerCode!);
@@ -95,12 +138,31 @@ class RepoController extends GetxController implements ScannerController {
         null;
   }
 
+  void selectItemType(int index) {
+    selectedItemType = index;
+    changePage(Page.playerRepoAdd);
+  }
+
+  void selectItem(Item item) {
+    selectedItem = item;
+    changePage(Page.playerRepoRemove);
+  }
+
+  void getLogs() async {
+    logs = await api.getLogs(player!) ?? [];
+    changePage(Page.playerLogs);
+  }
+
+  void addItem() {
+    changePage(Page.playerItems);
+  }
+
   void addItemToRepo(location) {
     // TODO : add item to repo
     changePage(Page.playerRepo);
   }
 
-  void removeItemToRepo(id, location) {
+  void removeItemFromRepo(id, location) {
     // TODO : remove item from repo
     changePage(Page.playerRepo);
   }

@@ -16,7 +16,7 @@ class Api {
   // get headers based on token
   Map<String, String> getHeaders(String? bearerToken) {
     Map<String, String> base = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
+      'Content-Type': 'application/json;charset=UTF-8',
       'Accept': 'application/json',
     };
     bearerToken != null
@@ -47,6 +47,9 @@ class Api {
   Future<Map<String, dynamic>?> post(
       String url, String? bearerToken, String body,
       {int expectedCode = 200}) async {
+    http.post(Uri.parse(baseUrl + url),
+        headers: getHeaders(bearerToken), body: body);
+
     return http
         .post(Uri.parse(baseUrl + url),
             headers: getHeaders(bearerToken), body: body)
@@ -76,7 +79,8 @@ class Api {
   Future<Player?> getPlayer(Uint8List code) async {
     String codeToBase64 = base64Encode(code);
 
-    Map<String, dynamic>? json = await get("/repo/user?id=$codeToBase64", null);
+    Map<String, dynamic>? json =
+        await get("/admin/repo/user?id=$codeToBase64", getBearerToken());
 
     return json != null ? Player.fromJson(json) : null;
   }
@@ -84,27 +88,27 @@ class Api {
   Future<Map<String, dynamic>?> scanTicket(Uint8List code) async {
     String codeToBase64 = base64Encode(code);
 
-    return await post("/repo/user?id=$codeToBase64", getBearerToken(),
+    return await post("/admin/repo/user?id=$codeToBase64", getBearerToken(),
         jsonEncode({'qrcode': codeToBase64}));
   }
 
   Future<Map<String, dynamic>?> addPlayerItem(
       Player player, String bearerToken, List<Item> items) async {
-    return await post(
-        "/repo/user/${player.id}/items", getBearerToken(), jsonEncode(items),
+    return await post("/admin/repo/user/${player.id}/items", getBearerToken(),
+        jsonEncode(items),
         expectedCode: 201);
   }
 
   Future<Map<String, dynamic>?> removePlayerItems(
       Player player, String bearerToken, Item item) async {
     return await delete(
-        "/repo/user/${player.id}/items/${item.id}", getBearerToken(),
+        "/admin/repo/user/${player.id}/items/${item.id}", getBearerToken(),
         expectedCode: 201);
   }
 
   Future<List<Log>?> getLogs(Player player) async {
     Map<String, dynamic>? json =
-        await get("/repo/user/${player.id}/logs", getBearerToken());
+        await get("/admin/repo/user/${player.id}/logs", getBearerToken());
 
     return json != null
         ? (json['logs'] as List).map((e) => Log.fromJson(e)).toList()

@@ -6,10 +6,15 @@ import 'package:ua_app_secu/controllers/repo.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
 
 class QRCode<T extends ScannerController> extends StatefulWidget {
-  const QRCode({Key? key, required this.text, this.isEntrance = false})
+  const QRCode(
+      {Key? key,
+      required this.text,
+      this.isEntrance = false,
+      this.enableButton = false})
       : super(key: key);
   final String text;
   final bool isEntrance;
+  final bool enableButton;
 
   @override
   State<QRCode<T>> createState() => _QRCodeState<T>();
@@ -19,6 +24,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
     with TickerProviderStateMixin {
   Uint8List? code;
   Color _borderColor = Colors.white;
+  bool buttonHolded = false;
 
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
@@ -62,15 +68,17 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
       MobileScanner(
         controller: scannerController,
         onDetect: (capture) async {
-          final List<Barcode> barcodes = capture.barcodes;
+          if (!widget.enableButton || buttonHolded) {
+            final List<Barcode> barcodes = capture.barcodes;
 
-          for (final qrcode in barcodes) {
-            if (qrcode.rawBytes == null) {
-              sendError('Erreur lors de la lecture du QRCode');
-            } else {
-              code = qrcode.rawBytes;
-              debugPrint('Barcode detected: ${String.fromCharCodes(code!)}');
-              controller.setPlayerCode(code!);
+            for (final qrcode in barcodes) {
+              if (qrcode.rawBytes == null) {
+                sendError('Erreur lors de la lecture du QRCode');
+              } else {
+                code = qrcode.rawBytes;
+                debugPrint('Barcode detected: ${String.fromCharCodes(code!)}');
+                controller.onScan(code!);
+              }
             }
           }
         },
@@ -136,6 +144,15 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
           ),
         ),
       ),
+      widget.enableButton
+          ? Positioned(
+              bottom: 10,
+              width: MediaQuery.of(context).size.width,
+              child: const Center(
+                  // TODO : Button on hold to scan
+                  ),
+            )
+          : const SizedBox(),
     ]);
   }
 }

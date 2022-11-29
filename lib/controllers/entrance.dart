@@ -39,7 +39,7 @@ class EntranceController extends GetxController implements ScannerController {
   }
 
   @override
-  void setPlayerCode(Uint8List? code) async {
+  void onScan(Uint8List? code) async {
     playerCode = code;
     playerJson = await Api().scanTicket(playerCode!);
     changePage(selectedIndex + 1);

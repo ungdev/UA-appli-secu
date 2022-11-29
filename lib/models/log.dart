@@ -24,12 +24,14 @@ class Agent {
 
 class Log {
   final String itemId;
+  final String itemType;
   final String action;
-  final String timestamp;
+  final int timestamp;
   final Agent agent;
 
   Log({
     required this.itemId,
+    required this.itemType,
     required this.action,
     required this.timestamp,
     required this.agent,
@@ -38,6 +40,7 @@ class Log {
   factory Log.fromJson(Map<String, dynamic> json) {
     return Log(
       itemId: json['itemId'],
+      itemType: json['itemType'],
       action: json['action'],
       timestamp: json['timestamp'],
       agent: Agent.fromJson(json['agent']),
@@ -47,6 +50,7 @@ class Log {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['itemId'] = itemId;
+    data['itemType'] = itemType;
     data['action'] = action;
     data['timestamp'] = timestamp;
     data['agent'] = agent.toJson();

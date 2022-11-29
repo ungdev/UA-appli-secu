@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
 import 'package:ua_app_secu/controllers/repo.dart';
 import 'package:ua_app_secu/controllers/settings.dart';
 import 'package:ua_app_secu/icons.dart';
 import 'package:ua_app_secu/screens/login.dart';
 import 'package:ua_app_secu/theme.dart';
+import 'package:flutter/services.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
+  GetStorage.init();
   runApp(const App());
 }
 
@@ -57,6 +60,11 @@ class _MainPage extends State<MainPageState> {
     ];
 
     pageController = PageController(initialPage: selectedPageIndex);
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 
   @override
@@ -65,47 +73,50 @@ class _MainPage extends State<MainPageState> {
     EntranceController entranceController = Get.put(EntranceController());
     SettingsController settingsController = Get.put(SettingsController());
 
-    return settingsController.bearerToken !=
-            null // TODO: change back to == after testing
-        ? const LoginPage()
-        : Scaffold(
-            body: PageView(
-              controller: pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: pages ?? [],
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              enableFeedback: true,
-              fixedColor: const Color.fromARGB(255, 41, 45, 50),
-              currentIndex: selectedPageIndex,
-              onTap: (index) {
-                setState(() {
-                  selectedPageIndex = index;
-                  pageController!.animateToPage(index,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut);
-                });
-              },
-              items: const [
-                BottomNavigationBarItem(
-                  activeIcon: Icon(Iconsax.settingsBold),
-                  icon: Icon(Iconsax.settings),
-                  label: 'Paramètres',
+    return GetBuilder<SettingsController>(
+      builder: (settings) {
+        return settings.bearerToken == null
+            ? const LoginPage()
+            : Scaffold(
+                body: PageView(
+                  controller: pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: pages ?? [],
                 ),
-                BottomNavigationBarItem(
-                  activeIcon: Icon(Iconsax.boxBold),
-                  icon: Icon(Iconsax.box),
-                  label: 'Repo',
+                bottomNavigationBar: BottomNavigationBar(
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  enableFeedback: true,
+                  fixedColor: const Color.fromARGB(255, 41, 45, 50),
+                  currentIndex: selectedPageIndex,
+                  onTap: (index) {
+                    setState(() {
+                      selectedPageIndex = index;
+                      pageController!.animateToPage(index,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut);
+                    });
+                  },
+                  items: const [
+                    BottomNavigationBarItem(
+                      activeIcon: Icon(Iconsax.settingsBold),
+                      icon: Icon(Iconsax.settings),
+                      label: 'Paramètres',
+                    ),
+                    BottomNavigationBarItem(
+                      activeIcon: Icon(Iconsax.boxBold),
+                      icon: Icon(Iconsax.box),
+                      label: 'Repo',
+                    ),
+                    BottomNavigationBarItem(
+                      activeIcon: Icon(Iconsax.fingerScanBold),
+                      icon: Icon(Iconsax.fingerScan),
+                      label: 'Entrée',
+                    ),
+                  ],
                 ),
-                BottomNavigationBarItem(
-                  activeIcon: Icon(Iconsax.fingerScanBold),
-                  icon: Icon(Iconsax.fingerScan),
-                  label: 'Entrée',
-                ),
-              ],
-            ),
-          );
+              );
+      },
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'package:ua_app_secu/models/item.dart';
 
 class Player {
   final String id;
-  final String pseudo;
+  final String username;
   final String firstname;
   final String lastname;
   final String place;
@@ -10,7 +10,7 @@ class Player {
 
   Player({
     required this.id,
-    required this.pseudo,
+    required this.username,
     required this.firstname,
     required this.lastname,
     required this.place,
@@ -25,7 +25,7 @@ class Player {
 
     return Player(
       id: json['id'],
-      pseudo: json['pseudo'],
+      username: json['username'],
       firstname: json['firstname'],
       lastname: json['lastname'],
       place: json['place'],
@@ -36,7 +36,7 @@ class Player {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['pseudo'] = pseudo;
+    data['username'] = username;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
     data['place'] = place;
