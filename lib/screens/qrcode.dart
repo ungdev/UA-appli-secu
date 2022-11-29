@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ua_app_secu/controllers/repo.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
 
 class QRCode<T extends ScannerController> extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
-import 'package:ua_app_secu/models/player.dart';
 
 class PlayerTicket extends StatefulWidget {
   const PlayerTicket({Key? key, required this.data}) : super(key: key);
