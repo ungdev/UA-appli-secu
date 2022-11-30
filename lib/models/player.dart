@@ -5,7 +5,7 @@ class Player {
   final String username;
   final String firstname;
   final String lastname;
-  final String place;
+  final String? place;
   final List<Item> items;
 
   Player({

@@ -79,7 +79,12 @@ class RepoController extends GetxController implements ScannerController {
             const QRCode<RepoController>(text: 'LE BILLET D\'UN JOUEUR');
         break;
       case Page.playerRepo:
-        currentPage = PlayerRepo(player: player!);
+        await refreshPlayer();
+        player != null
+            ? currentPage = PlayerRepo(player: player!)
+            : // TODO: add error message
+            null;
+
         break;
       case Page.playerItems:
         currentPage = const ItemsRepo();
@@ -93,14 +98,7 @@ class RepoController extends GetxController implements ScannerController {
             const QRCode<RepoController>(text: 'L\'EMPLACEMENT DE RETRAIT');
         break;
       case Page.playerLogs:
-        List<Log>? logs = await api.getLogs(player!);
-
-        if (logs != null) {
-          currentPage = LogsRepo(logs: logs);
-        } else {
-          // TODO: add error message
-          return;
-        }
+        currentPage = LogsRepo(logs: logs);
         break;
     }
 
@@ -110,32 +108,32 @@ class RepoController extends GetxController implements ScannerController {
   }
 
   @override
-  void onScan(Uint8List code) async {
+  Future<void> onScan(Uint8List code) async {
     switch (selectedPage) {
       case Page.playerQRCode:
-        setPlayerCode(code);
+        await setPlayerCode(code);
         break;
       case Page.playerRepoAdd:
-        addItemToRepo(String.fromCharCodes(code));
+        await addItemToRepo(String.fromCharCodes(code));
         break;
       case Page.playerRepoRemove:
-        removeItemFromRepo(
-            repoItemTypes[selectedItemType].id, String.fromCharCodes(code));
+        await removeItemFromRepo(String.fromCharCodes(code));
         break;
       default:
         break;
     }
   }
 
-  void setPlayerCode(Uint8List code) async {
+  Future<void> setPlayerCode(Uint8List code) async {
     playerCode = code;
+    await refreshPlayer();
+    changePage(Page.playerRepo);
+  }
+
+  Future<void> refreshPlayer() async {
     player = await api.getPlayer(playerCode!);
 
-    player != null
-        ? changePage(Page.playerRepo)
-        : // (currentPage as QRCode).sendError('Le joueur n\'existe pas');
-        // TODO: add error message
-        null;
+    update();
   }
 
   void selectItemType(int index) {
@@ -157,13 +155,20 @@ class RepoController extends GetxController implements ScannerController {
     changePage(Page.playerItems);
   }
 
-  void addItemToRepo(location) {
-    // TODO : add item to repo
+  Future<void> addItemToRepo(zone) async {
+    List<Item> items = [
+      Item(id: '', type: repoItemTypes[selectedItemType].id, zone: zone),
+    ];
+    await api.addPlayerItem(player!, items);
     changePage(Page.playerRepo);
   }
 
-  void removeItemFromRepo(id, location) {
-    // TODO : remove item from repo
-    changePage(Page.playerRepo);
+  Future<void> removeItemFromRepo(zone) async {
+    if (selectedItem!.zone == zone) {
+      await api.removePlayerItems(player!, selectedItem!);
+      changePage(Page.playerRepo);
+    } else {
+      // TODO: implement error message
+    }
   }
 }

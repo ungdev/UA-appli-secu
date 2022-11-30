@@ -93,14 +93,14 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> addPlayerItem(
-      Player player, String bearerToken, List<Item> items) async {
+      Player player, List<Item> items) async {
     return await post("/admin/repo/user/${player.id}/items", getBearerToken(),
-        jsonEncode(items),
+        '{"items": ${jsonEncode(items)}}',
         expectedCode: 201);
   }
 
   Future<Map<String, dynamic>?> removePlayerItems(
-      Player player, String bearerToken, Item item) async {
+      Player player, Item item) async {
     return await delete(
         "/admin/repo/user/${player.id}/items/${item.id}", getBearerToken(),
         expectedCode: 201);

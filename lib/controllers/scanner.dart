@@ -5,5 +5,5 @@ class ScannerController {
   // Scanner controller
   MobileScannerController? scannerController;
 
-  void onScan(Uint8List code) async {}
+  Future<void> onScan(Uint8List code) async {}
 }

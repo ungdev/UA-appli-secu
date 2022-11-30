@@ -17,85 +17,95 @@ class _PlayerRepoState extends State<PlayerRepo> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Back icon
-        IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () {
-            controller.changePage(repo.Page.playerRepo);
-          },
-        ),
-        Column(
-          children: [
-            const Text(
-              "BIENVENUE",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Text(
-              widget.player.username,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'PLACE ${widget.player.place}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            )
-          ],
-        ),
-        IntrinsicHeight(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return Padding(
+      padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Back icon
+          Row(
             children: [
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.player.items.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(widget.player.items[index].type),
-                    subtitle: Text(widget.player.items[index].zone),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.remove_rounded),
-                      onPressed: () {
-                        controller.selectItem(widget.player.items[index]);
-                      },
-                    ),
-                  );
+              IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () {
+                  controller.changePage(repo.Page.playerQRCode);
                 },
               ),
             ],
           ),
-        ),
-        Row(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                controller.getLogs();
-              },
-              child: Row(
-                children: const [
-                  Icon(Iconsax.archiveBook),
-                  SizedBox(width: 5),
-                  Text('Logs'),
-                ],
+          Column(
+            children: [
+              const Text(
+                "BIENVENUE",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
+              Text(
+                widget.player.username,
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Text(
+                'PLACE ${widget.player.place}',
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            ],
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.player.items.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(widget.player.items[index].type),
+                      subtitle: Text(widget.player.items[index].zone),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.remove_rounded),
+                        onPressed: () {
+                          controller.selectItem(widget.player.items[index]);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-        FloatingActionButton(
-          onPressed: () => controller.addItem(),
-          child: const Icon(Iconsax.add),
-        ),
-      ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(),
+              ElevatedButton(
+                onPressed: () {
+                  controller.getLogs();
+                },
+                child: Row(
+                  children: const [
+                    Icon(Iconsax.archiveBook),
+                    SizedBox(width: 5),
+                    Text('Logs'),
+                  ],
+                ),
+              ),
+              FloatingActionButton(
+                onPressed: () => controller.addItem(),
+                child: const Icon(Iconsax.add),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

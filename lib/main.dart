@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
-  GetStorage.init();
+  await GetStorage.init();
   runApp(const App());
 }
 

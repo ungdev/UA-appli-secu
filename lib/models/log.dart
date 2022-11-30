@@ -26,7 +26,7 @@ class Log {
   final String itemId;
   final String itemType;
   final String action;
-  final int timestamp;
+  final String timestamp;
   final Agent agent;
 
   Log({

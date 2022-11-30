@@ -19,7 +19,6 @@ class Item {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
     data['type'] = type;
     data['zone'] = zone;
     return data;

@@ -24,10 +24,12 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   Uint8List? code;
   Color _borderColor = Colors.white;
   bool buttonHolded = false;
+  var lastScan = new DateTime.now();
 
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
     facing: CameraFacing.back,
+    detectionTimeoutMs: 2000,
     detectionSpeed: DetectionSpeed.noDuplicates,
     formats: [BarcodeFormat.qrCode],
     returnImage: false,
@@ -71,12 +73,17 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
             final List<Barcode> barcodes = capture.barcodes;
 
             for (final qrcode in barcodes) {
-              if (qrcode.rawBytes == null) {
-                sendError('Erreur lors de la lecture du QRCode');
-              } else {
-                code = qrcode.rawBytes;
-                debugPrint('Barcode detected: ${String.fromCharCodes(code!)}');
-                controller.onScan(code!);
+              if (lastScan.difference(DateTime.now()).inMilliseconds.abs() >
+                  1500) {
+                lastScan = new DateTime.now();
+                if (qrcode.rawBytes == null) {
+                  sendError('Erreur lors de la lecture du QRCode');
+                } else {
+                  code = qrcode.rawBytes;
+                  debugPrint(
+                      'Barcode detected: ${String.fromCharCodes(code!)}');
+                  await controller.onScan(code!);
+                }
               }
             }
           }
