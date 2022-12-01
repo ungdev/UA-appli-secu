@@ -80,10 +80,8 @@ class RepoController extends GetxController implements ScannerController {
         break;
       case Page.playerRepo:
         await refreshPlayer();
-        player != null
-            ? currentPage = PlayerRepo(player: player!)
-            : // TODO: add error message
-            null;
+        if (player != null) currentPage = PlayerRepo(player: player!);
+        null;
 
         break;
       case Page.playerItems:
@@ -168,7 +166,15 @@ class RepoController extends GetxController implements ScannerController {
       await api.removePlayerItems(player!, selectedItem!);
       changePage(Page.playerRepo);
     } else {
-      // TODO: implement error message
+      showError("La zone scannée ne correspond pas à l'emplacement de l'item");
     }
+  }
+
+  void showError(message) {
+    Get.snackbar('Error', message,
+        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+        snackStyle: SnackStyle.FLOATING,
+        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20));
   }
 }

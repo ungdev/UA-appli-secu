@@ -24,7 +24,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   Uint8List? code;
   Color _borderColor = Colors.white;
   bool buttonHolded = false;
-  var lastScan = new DateTime.now();
+  var lastScan = DateTime.now();
 
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
@@ -84,6 +84,8 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
                       'Barcode detected: ${String.fromCharCodes(code!)}');
                   await controller.onScan(code!);
                 }
+              } else {
+                debugPrint('Scanning too fast');
               }
             }
           }

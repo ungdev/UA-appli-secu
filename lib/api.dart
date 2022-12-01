@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:ua_app_secu/controllers/repo.dart';
 import 'package:ua_app_secu/models/item.dart';
 import 'package:ua_app_secu/models/log.dart';
 import 'package:ua_app_secu/models/player.dart';
@@ -31,22 +32,18 @@ class Api {
 
   // send get request with http module
   Future<Map<String, dynamic>?> get(String url, String? bearerToken,
-      {int expectedCode = 200}) async {
+      {expectedCode = 200}) async {
     return http
         .get(Uri.parse(baseUrl + url), headers: getHeaders(bearerToken))
         .then((response) {
-      if (response.statusCode == expectedCode) {
-        return jsonDecode(response.body.toString());
-      } else {
-        return null;
-      }
+      return getResponse(response, expectedCode: expectedCode);
     });
   }
 
   // send post request with http module
   Future<Map<String, dynamic>?> post(
       String url, String? bearerToken, String body,
-      {int expectedCode = 200}) async {
+      {expectedCode = 200}) async {
     http.post(Uri.parse(baseUrl + url),
         headers: getHeaders(bearerToken), body: body);
 
@@ -54,31 +51,40 @@ class Api {
         .post(Uri.parse(baseUrl + url),
             headers: getHeaders(bearerToken), body: body)
         .then((response) {
-      if (response.statusCode == expectedCode) {
-        return jsonDecode(response.body.toString());
-      } else {
-        return null;
-      }
+      return getResponse(response, expectedCode: expectedCode);
     });
   }
 
   // send delete request with http module
   Future<Map<String, dynamic>?> delete(String url, String? bearerToken,
-      {int expectedCode = 200}) async {
+      {expectedCode = 200}) async {
     return http
         .delete(Uri.parse(baseUrl + url), headers: getHeaders(bearerToken))
         .then((response) {
-      if (response.statusCode == expectedCode) {
-        return jsonDecode(response.body.toString());
-      } else {
-        return null;
-      }
+      return getResponse(response, expectedCode: expectedCode);
     });
+  }
+
+  // Parse the response from the API and display errors if any
+  Map<String, dynamic>? getResponse(http.Response response,
+      {int expectedCode = 200}) {
+    print('GET RESPONSE: ${response.body}');
+    if (response.statusCode >= 500) {
+      RepoController().showError('Une erreur s\'est produite');
+      return null;
+    }
+    Map<String, dynamic> body = jsonDecode(response.body);
+    if (response.statusCode == expectedCode) {
+      return body;
+    } else {
+      RepoController().showError(body['error']);
+      return null;
+    }
   }
 
   Future<Player?> getPlayer(Uint8List code) async {
     String codeToBase64 = base64Encode(code);
-
+    print('GET CODE BASE64 : ${codeToBase64}');
     Map<String, dynamic>? json =
         await get("/admin/repo/user?id=$codeToBase64", getBearerToken());
 

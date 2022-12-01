@@ -21,7 +21,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'UA Secu',
       debugShowCheckedModeBanner: false,
       theme: AppTheme().get(),
