@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
+import 'package:ua_app_secu/models/entrance_player.dart';
 import 'package:ua_app_secu/screens/qrcode.dart';
 import 'package:ua_app_secu/screens/ticket_player.dart';
 
@@ -12,21 +13,13 @@ class EntranceController extends GetxController implements ScannerController {
   // Player Code (via qrcode)
   Uint8List? playerCode;
   // PlayerJson
-  Map<String, dynamic>? playerJson;
+  EntrancePlayer? entrancePlayer;
   // Current Page
   Widget? currentPage;
-  // Scanner controller
-  @override
-  MobileScannerController? scannerController;
 
   @override
   void onInit() {
     super.onInit();
-    scannerController = MobileScannerController(
-        // facing: CameraFacing.back,
-        // detectionSpeed: DetectionSpeed.noDuplicates,
-        // formats: [BarcodeFormat.qrCode],
-        );
     changePage(0);
   }
 
@@ -34,14 +27,17 @@ class EntranceController extends GetxController implements ScannerController {
     selectedIndex = newIndex;
     currentPage = selectedIndex == 0
         ? const QRCode<EntranceController>(text: 'LE BILLET D\'UN JOUEUR')
-        : PlayerTicket(data: playerJson!);
+        : PlayerTicket(entrancePlayer: entrancePlayer!);
     update();
   }
 
   @override
   Future<void> onScan(Uint8List? code) async {
     playerCode = code;
-    playerJson = await Api().scanTicket(playerCode!);
-    changePage(selectedIndex + 1);
+    Map<String, dynamic>? json = await Api().scanTicket(playerCode!);
+    if (json != null) {
+      entrancePlayer = EntrancePlayer.fromJson(json);
+      changePage(1);
+    }
   }
 }
