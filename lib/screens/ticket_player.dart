@@ -36,14 +36,14 @@ class _PlayerTicketState extends State<PlayerTicket> {
           Column(
             children: [
               Text(
-                "${widget.entrancePlayer.firstname} ${widget.entrancePlayer.lastname}",
+                widget.entrancePlayer.username,
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
-                widget.entrancePlayer.username,
+                "${widget.entrancePlayer.firstname} ${widget.entrancePlayer.lastname}",
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
@@ -55,37 +55,41 @@ class _PlayerTicketState extends State<PlayerTicket> {
                     ? 'PLACE ${widget.entrancePlayer.place}'
                     : 'PAS DE PLACE',
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 26,
                   fontWeight: FontWeight.w500,
                 ),
               )
             ],
           ),
-          GridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: 4.0,
-            mainAxisSpacing: 8.0,
-            children: [
-              getGroup("Type",
-                  controller.getUserTypeText(widget.entrancePlayer.type)),
-              widget.entrancePlayer.teamName != null
-                  ? getGroup("Équipe", widget.entrancePlayer.teamName!)
-                  : Container(),
-              widget.entrancePlayer.tournamentName != null
-                  ? getGroup("Tournoi", widget.entrancePlayer.tournamentName!)
-                  : Container(),
-              ...getAgeGroups(),
-              widget.entrancePlayer.hasPaid
-                  ? getGroup("Payé", "Oui")
-                  : getGroup("Payé", "Non", isImportant: true),
-            ],
+          const SizedBox(height: 50),
+          Expanded(
+            child: Wrap(
+              runSpacing: 50,
+              spacing: 50,
+              alignment: WrapAlignment.center,
+              children: [
+                getGroup("Type",
+                    controller.getUserTypeText(widget.entrancePlayer.type)),
+                widget.entrancePlayer.teamName != null
+                    ? getGroup("Équipe", widget.entrancePlayer.teamName!)
+                    : Container(),
+                widget.entrancePlayer.tournamentName != null
+                    ? getGroup("Tournoi", widget.entrancePlayer.tournamentName!)
+                    : Container(),
+                ...getAgeGroups(),
+                widget.entrancePlayer.hasPaid
+                    ? getGroup("Payé", "Oui")
+                    : getGroup("Payé", "Non", isImportant: true),
+              ],
+            ),
           ),
           Column(
             children: [
-              const Text(
+              Text(
                 "Informations complémentaires",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 12,
+                  color: Colors.grey.shade400,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -99,6 +103,7 @@ class _PlayerTicketState extends State<PlayerTicket> {
               ),
             ],
           ),
+          const SizedBox(height: 100),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -127,15 +132,17 @@ class _PlayerTicketState extends State<PlayerTicket> {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade400,
             fontWeight: FontWeight.w500,
           ),
         ),
         Text(
           data,
+          textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: isImportant ? Theme.of(context).primaryColor : Colors.black,
           ),

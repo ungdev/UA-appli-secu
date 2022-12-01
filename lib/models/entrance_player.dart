@@ -37,11 +37,11 @@ class EntrancePlayer {
       type: json['type'],
       age: json['age'],
       hasPaid: json['hasPaid'],
-      attendant: json['attendant']
+      attendant: json['attendant'] != null
           ? json['attendant']['firstname'] + ' ' + json['attendant']['lastname']
           : null,
-      teamName: json['team'] ? json['team']['name'] : null,
-      tournamentName: json['team'] && json['team']['tournament']
+      teamName: json['team'] != null ? json['team']['name'] : null,
+      tournamentName: json['team'] != null && json['team']['tournament'] != null
           ? json['team']['tournament']['name']
           : null,
       customMessage: json['customMessage'],

@@ -68,13 +68,13 @@ class Api {
   // Parse the response from the API and display errors if any
   Map<String, dynamic>? getResponse(http.Response response,
       {int expectedCode = 200}) {
-    print('GET RESPONSE: ${response.body}');
     if (response.statusCode >= 500) {
       RepoController().showError('Une erreur s\'est produite');
       return null;
     }
     Map<String, dynamic> body = jsonDecode(response.body);
     if (response.statusCode == expectedCode) {
+      if (response.body == "{}") return null;
       return body;
     } else {
       RepoController().showError(body['error']);
@@ -84,7 +84,6 @@ class Api {
 
   Future<Player?> getPlayer(Uint8List code) async {
     String codeToBase64 = base64Encode(code);
-    print('GET CODE BASE64 : ${codeToBase64}');
     Map<String, dynamic>? json =
         await get("/admin/repo/user?id=$codeToBase64", getBearerToken());
 

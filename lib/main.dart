@@ -39,7 +39,7 @@ class MainPageState extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPageState> {
-  int selectedPageIndex = 2;
+  int selectedPageIndex = 1;
   List<Widget>? pages;
   PageController? pageController;
 
