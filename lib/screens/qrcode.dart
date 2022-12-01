@@ -5,14 +5,14 @@ import 'package:get/get.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
 
 class QRCode<T extends ScannerController> extends StatefulWidget {
-  const QRCode(
-      {Key? key,
-      required this.text,
-      this.isEntrance = false,
-      this.enableButton = false})
-      : super(key: key);
+  const QRCode({
+    Key? key,
+    required this.text,
+    this.title = '',
+    this.enableButton = false,
+  }) : super(key: key);
   final String text;
-  final bool isEntrance;
+  final String title;
   final bool enableButton;
 
   @override
@@ -29,7 +29,6 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
     facing: CameraFacing.back,
-    detectionTimeoutMs: 2000,
     detectionSpeed: DetectionSpeed.noDuplicates,
     formats: [BarcodeFormat.qrCode],
     returnImage: false,
@@ -56,11 +55,22 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   @override
   void initState() {
     super.initState();
-
     // In case of page change, wait a bit before starting the camera
     Future.delayed(const Duration(milliseconds: 500), () {
       scannerController.start();
     });
+  }
+
+  @override
+  void deactivate() {
+    scannerController.stop();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    scannerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -71,11 +81,11 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
         onDetect: (capture) async {
           if (!widget.enableButton || buttonHolded) {
             final List<Barcode> barcodes = capture.barcodes;
-
+            debugPrint('Barcodes: ${barcodes.length}');
             for (final qrcode in barcodes) {
               if (lastScan.difference(DateTime.now()).inMilliseconds.abs() >
                   1500) {
-                lastScan = new DateTime.now();
+                lastScan = DateTime.now();
                 if (qrcode.rawBytes == null) {
                   sendError('Erreur lors de la lecture du QRCode');
                 } else {

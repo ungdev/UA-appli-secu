@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ua_app_secu">
+    package="fr.uttnetgroup.uttarena.secu">
    <application
         android:label="ua_app_secu"
         android:name="${applicationName}"
