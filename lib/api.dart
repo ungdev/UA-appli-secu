@@ -94,8 +94,8 @@ class Api {
   Future<Map<String, dynamic>?> scanTicket(Uint8List code) async {
     String codeToBase64 = base64Encode(code);
 
-    return await post("/admin/repo/user?id=$codeToBase64", getBearerToken(),
-        jsonEncode({'qrcode': codeToBase64}));
+    return await post(
+        "/admin/scan", getBearerToken(), jsonEncode({'qrcode': codeToBase64}));
   }
 
   Future<Map<String, dynamic>?> addPlayerItem(
