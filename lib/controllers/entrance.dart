@@ -40,4 +40,19 @@ class EntranceController extends GetxController implements ScannerController {
       changePage(1);
     }
   }
+
+  String getUserTypeText(type) {
+    switch (type) {
+      case 'player':
+        return 'Joueur';
+      case 'coach':
+        return 'Coach/Manager';
+      case 'spectator':
+        return 'Spectateur';
+      case 'orga':
+        return 'Orga';
+      default:
+        return 'Inconnu';
+    }
+  }
 }

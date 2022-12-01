@@ -5,10 +5,12 @@ class EntrancePlayer {
   String lastname;
   String? place;
   String type;
-  String email;
-  String teamName;
-  String tournamentName;
-  String customMessage;
+  String age;
+  bool hasPaid;
+  String? attendant;
+  String? teamName;
+  String? tournamentName;
+  String? customMessage;
 
   EntrancePlayer({
     required this.id,
@@ -17,7 +19,9 @@ class EntrancePlayer {
     required this.lastname,
     required this.place,
     required this.type,
-    required this.email,
+    required this.age,
+    required this.hasPaid,
+    required this.attendant,
     required this.teamName,
     required this.tournamentName,
     required this.customMessage,
@@ -31,9 +35,15 @@ class EntrancePlayer {
       lastname: json['lastname'],
       place: json['place'],
       type: json['type'],
-      email: json['email'],
-      teamName: json['team']['name'],
-      tournamentName: json['team']['tournament']['name'],
+      age: json['age'],
+      hasPaid: json['hasPaid'],
+      attendant: json['attendant']
+          ? json['attendant']['firstname'] + ' ' + json['attendant']['lastname']
+          : null,
+      teamName: json['team'] ? json['team']['name'] : null,
+      tournamentName: json['team'] && json['team']['tournament']
+          ? json['team']['tournament']['name']
+          : null,
       customMessage: json['customMessage'],
     );
   }
@@ -46,7 +56,9 @@ class EntrancePlayer {
     data['lastname'] = lastname;
     data['place'] = place;
     data['type'] = type;
-    data['email'] = email;
+    data['age'] = age;
+    data['hasPaid'] = hasPaid;
+    data['attendant'] = attendant;
     data['teamName'] = teamName;
     data['tournamentName'] = tournamentName;
     data['customMessage'] = customMessage;
