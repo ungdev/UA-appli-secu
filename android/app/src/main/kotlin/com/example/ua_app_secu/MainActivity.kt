@@ -1,4 +1,4 @@
-package com.example.ua_app_secu
+package fr.uttnetgroup.uttarena.secu
 
 import io.flutter.embedding.android.FlutterActivity
 
