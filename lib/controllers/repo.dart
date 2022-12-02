@@ -75,8 +75,8 @@ class RepoController extends GetxController implements ScannerController {
   void changePage(Page newPage) async {
     switch (newPage) {
       case Page.playerQRCode:
-        currentPage =
-            const QRCode<RepoController>(text: 'LE BILLET D\'UN JOUEUR');
+        currentPage = const QRCode<RepoController>(
+            text: 'LE BILLET D\'UN JOUEUR', title: "VESTIAIRE");
         break;
       case Page.playerRepo:
         await refreshPlayer();
@@ -88,12 +88,13 @@ class RepoController extends GetxController implements ScannerController {
         currentPage = const ItemsRepo();
         break;
       case Page.playerRepoAdd:
-        currentPage =
-            const QRCode<RepoController>(text: 'L\'EMPLACEMENT DE DESTINATION');
+        currentPage = const QRCode<RepoController>(
+            text: 'L\'EMPLACEMENT DE DESTINATION', title: "AJOUTER UN OBJET");
         break;
       case Page.playerRepoRemove:
-        currentPage =
-            const QRCode<RepoController>(text: 'L\'EMPLACEMENT DE RETRAIT');
+        currentPage = QRCode<RepoController>(
+            text: 'L\'EMPLACEMENT DE RETRAIT',
+            title: "ENLEVER ${selectedItem!.zone.toUpperCase()}");
         break;
       case Page.playerLogs:
         currentPage = LogsRepo(logs: logs);
@@ -171,10 +172,16 @@ class RepoController extends GetxController implements ScannerController {
   }
 
   void showError(message) {
-    Get.snackbar('Error', message,
-        duration: const Duration(seconds: 3),
-        snackPosition: SnackPosition.BOTTOM,
-        snackStyle: SnackStyle.FLOATING,
-        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20));
+    Get.snackbar(
+      'Error',
+      message,
+      duration: const Duration(seconds: 3),
+      snackPosition: SnackPosition.BOTTOM,
+      snackStyle: SnackStyle.FLOATING,
+      margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+      backgroundColor: Colors.black87.withOpacity(0.4),
+      colorText: Colors.white,
+      borderRadius: 20,
+    );
   }
 }

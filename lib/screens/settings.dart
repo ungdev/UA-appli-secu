@@ -15,16 +15,19 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        children: [
-          const Text('Settings'),
-          ElevatedButton(
-            onPressed: () {
-              controller.removeBearerToken();
-            },
-            child: const Text('Déconnexion'),
-          ),
-        ],
+      child: SizedBox(
+        height: 100,
+        child: Column(
+          children: [
+            const Text('Settings'),
+            ElevatedButton(
+              onPressed: () {
+                controller.removeBearerToken();
+              },
+              child: const Text('Déconnexion'),
+            ),
+          ],
+        ),
       ),
     );
   }

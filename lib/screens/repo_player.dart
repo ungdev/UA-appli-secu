@@ -67,14 +67,18 @@ class _PlayerRepoState extends State<PlayerRepo> {
                   shrinkWrap: true,
                   itemCount: widget.player.items.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(widget.player.items[index].type),
-                      subtitle: Text(widget.player.items[index].zone),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.remove_rounded),
-                        onPressed: () {
-                          controller.selectItem(widget.player.items[index]);
-                        },
+                    return Material(
+                      elevation: 10,
+                      child: ListTile(
+                        title: Text(widget.player.items[index].type),
+                        subtitle: Text(widget.player.items[index].zone),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.remove_circle_outline_rounded),
+                          color: Colors.red,
+                          onPressed: () {
+                            controller.selectItem(widget.player.items[index]);
+                          },
+                        ),
                       ),
                     );
                   },

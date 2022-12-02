@@ -24,6 +24,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   Uint8List? code;
   Color _borderColor = Colors.white;
   bool buttonHolded = false;
+  bool display = false;
   var lastScan = DateTime.now();
 
   T controller = Get.find();
@@ -55,9 +56,13 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   @override
   void initState() {
     super.initState();
+    scannerController.stop();
     // In case of page change, wait a bit before starting the camera
     Future.delayed(const Duration(milliseconds: 500), () async {
       await scannerController.start();
+      setState(() {
+        display = true;
+      });
     });
   }
 
@@ -75,102 +80,126 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      MobileScanner(
-        controller: scannerController,
-        onDetect: (capture) async {
-          if (!widget.enableButton || buttonHolded) {
-            final List<Barcode> barcodes = capture.barcodes;
-            debugPrint('Barcodes: ${barcodes.length}');
-            for (final qrcode in barcodes) {
-              if (lastScan.difference(DateTime.now()).inMilliseconds.abs() >
-                  1500) {
-                lastScan = DateTime.now();
-                if (qrcode.rawBytes == null) {
-                  sendError('Erreur lors de la lecture du QRCode');
-                } else {
-                  code = qrcode.rawBytes;
-                  debugPrint(
-                      'Barcode detected: ${String.fromCharCodes(code!)}');
-                  await controller.onScan(code!);
+    return display
+        ? Stack(children: [
+            MobileScanner(
+              controller: scannerController,
+              onDetect: (capture) async {
+                if (!widget.enableButton || buttonHolded) {
+                  final List<Barcode> barcodes = capture.barcodes;
+                  debugPrint('Barcodes: ${barcodes.length}');
+                  for (final qrcode in barcodes) {
+                    if (lastScan
+                            .difference(DateTime.now())
+                            .inMilliseconds
+                            .abs() >
+                        1500) {
+                      lastScan = DateTime.now();
+                      if (qrcode.rawBytes == null) {
+                        sendError('Erreur lors de la lecture du QRCode');
+                      } else {
+                        code = qrcode.rawBytes;
+                        debugPrint(
+                            'Barcode detected: ${String.fromCharCodes(code!)}');
+                        await controller.onScan(code!);
+                      }
+                    } else {
+                      debugPrint('Scanning too fast');
+                    }
+                  }
                 }
-              } else {
-                debugPrint('Scanning too fast');
-              }
-            }
-          }
-        },
-      ),
-      Container(
-        color: Colors.black.withOpacity(0.5),
-      ),
-      Center(
-        child: Stack(children: [
-          AnimatedContainer(
-            width: 250,
-            height: 250,
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: _borderColor,
-                width: 3,
-              ),
-              borderRadius: BorderRadius.circular(40),
+              },
             ),
-          ),
-          AnimatedContainer(
-            width: 250,
-            height: 250,
-            duration: const Duration(milliseconds: 300),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              backgroundBlendMode: BlendMode.overlay,
-              borderRadius: BorderRadius.circular(40),
+            Container(
+              color: Colors.black.withOpacity(0.5),
             ),
-          ),
-        ]),
-      ),
-      Positioned(
-        bottom: 50,
-        width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 2 / 3,
-            height: 200,
-            child: Center(
-              child: Column(children: [
-                Text(
-                  'SCANNEZ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 44,
+            Center(
+              child: Stack(children: [
+                AnimatedContainer(
+                  width: 250,
+                  height: 250,
+                  duration: const Duration(milliseconds: 300),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _borderColor,
+                      width: 3,
+                    ),
+                    borderRadius: BorderRadius.circular(40),
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  widget.text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
+                AnimatedContainer(
+                  width: 250,
+                  height: 250,
+                  duration: const Duration(milliseconds: 300),
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    fontSize: 36,
+                    backgroundBlendMode: BlendMode.overlay,
+                    borderRadius: BorderRadius.circular(40),
                   ),
                 ),
               ]),
             ),
-          ),
-        ),
-      ),
-      widget.enableButton
-          ? Positioned(
-              bottom: 10,
+            Positioned(
+              bottom: 50,
               width: MediaQuery.of(context).size.width,
-              child: const Center(
-                  // TODO : Button on hold to scan
+              child: Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 2 / 3,
+                  height: 200,
+                  child: Center(
+                    child: Column(children: [
+                      Text(
+                        'SCANNEZ',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 44,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        widget.text,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 36,
+                        ),
+                      ),
+                    ]),
                   ),
-            )
-          : const SizedBox(),
-    ]);
+                ),
+              ),
+            ),
+            Positioned(
+              top: 100,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
+                child: Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 50,
+                  ),
+                ),
+              ),
+            ),
+            widget.enableButton
+                ? Positioned(
+                    bottom: 10,
+                    width: MediaQuery.of(context).size.width,
+                    child: const Center(
+                        // TODO : Button on hold to scan
+                        ),
+                  )
+                : const SizedBox(),
+          ])
+        : // Loading
+        Center(
+            child: CircularProgressIndicator(
+            color: Theme.of(context).primaryColor,
+          ));
   }
 }

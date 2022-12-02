@@ -24,15 +24,19 @@ class _LogsRepoState extends State<LogsRepo> {
             ? ListView.builder(
                 itemCount: widget.logs!.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                        '${widget.logs![index].itemType} par ${widget.logs![index].agent.firstname} ${widget.logs![index].agent.lastname}'),
-                    subtitle: Text(
-                      DateTime.parse(widget.logs![index].timestamp).toString(),
+                  return Material(
+                    elevation: 10,
+                    child: ListTile(
+                      title: Text(
+                          '${widget.logs![index].itemType} par ${widget.logs![index].agent.firstname} ${widget.logs![index].agent.lastname}'),
+                      subtitle: Text(
+                        DateTime.parse(widget.logs![index].timestamp)
+                            .toString(),
+                      ),
+                      textColor: widget.logs![index].action == 'added'
+                          ? Colors.green
+                          : Colors.red,
                     ),
-                    textColor: widget.logs![index].action == 'added'
-                        ? Colors.green
-                        : Colors.red,
                   );
                 },
               )

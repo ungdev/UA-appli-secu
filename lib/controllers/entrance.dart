@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
 import 'package:ua_app_secu/models/entrance_player.dart';
@@ -26,7 +25,8 @@ class EntranceController extends GetxController implements ScannerController {
   void changePage(int newIndex) {
     selectedIndex = newIndex;
     currentPage = selectedIndex == 0
-        ? const QRCode<EntranceController>(text: 'LE BILLET D\'UN JOUEUR')
+        ? const QRCode<EntranceController>(
+            text: 'LE BILLET D\'UN JOUEUR', title: "SCAN ENTRÉE")
         : PlayerTicket(entrancePlayer: entrancePlayer!);
     update();
   }

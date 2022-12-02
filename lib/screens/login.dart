@@ -151,11 +151,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Processing Data'),
-                              ),
-                            );
                             Map<String, dynamic>? login = await Api().login(
                               _usernameController.text,
                               _passwordController.text,
@@ -164,12 +159,6 @@ class _LoginPageState extends State<LoginPage> {
                             if (login != null) {
                               _settingsController
                                   .setBearerToken(login['token']);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Erreur de connexion'),
-                                ),
-                              );
                             }
                           }
                         },
