@@ -55,8 +55,8 @@ class RepoController extends GetxController implements ScannerController {
       description: 'Clavier, souris, casque, etc.',
     ),
   ];
-  // Selected Item Type
-  int selectedItemType = 0;
+  // Selected Items Type
+  List<int> selectedItemsType = <int>[];
   // Select Item
   Item? selectedItem;
   // Logs
@@ -65,6 +65,9 @@ class RepoController extends GetxController implements ScannerController {
   @override
   void onInit() {
     super.onInit();
+
+    selectedItemsType = List<int>.filled(repoItemTypes.length, 0);
+
     scannerController = MobileScannerController(
       facing: CameraFacing.back,
       detectionSpeed: DetectionSpeed.noDuplicates,
@@ -87,13 +90,13 @@ class RepoController extends GetxController implements ScannerController {
 
         break;
       case Page.playerItems:
+        selectedItemsType = List<int>.filled(repoItemTypes.length, 0);
+
         currentPage = const ItemsRepo();
         break;
       case Page.playerRepoAdd:
-        currentPage = QRCode<RepoController>(
-            text: 'L\'EMPLACEMENT DE DESTINATION',
-            title:
-                "AJOUTER UN ${repoItemTypes[selectedItemType].name.toUpperCase()}");
+        currentPage = const QRCode<RepoController>(
+            text: 'L\'EMPLACEMENT DE DESTINATION', title: "AJOUTER UN ITEM");
         break;
       case Page.playerRepoRemove:
         currentPage = QRCode<RepoController>(
@@ -142,8 +145,8 @@ class RepoController extends GetxController implements ScannerController {
     update();
   }
 
-  void selectItemType(int index) {
-    selectedItemType = index;
+  void selectItemsType(List<int> index) {
+    selectedItemsType = index;
     changePage(Page.playerRepoAdd);
   }
 
@@ -162,19 +165,23 @@ class RepoController extends GetxController implements ScannerController {
   }
 
   Future<void> addItemToRepo(String zone) async {
-    List<Item> items = [
-      Item(id: '', type: repoItemTypes[selectedItemType].id, zone: zone),
-    ];
+    List<Item> items = [];
+
+    for (int i = 0; i < selectedItemsType.length; i++) {
+      int value = selectedItemsType[i];
+      if (value == 1) {
+        items.add(Item(
+          id: '',
+          type: repoItemTypes[i].id,
+          zone: zone,
+        ));
+      }
+    }
     await api.addPlayerItem(player!, items);
     changePage(Page.playerRepo);
   }
 
   Future<void> removeItemFromRepo(String zone) async {
-    if (zone.contains('Zone')) {
-      showError("Une zone doit commencer par 'Zone'");
-      return;
-    }
-
     if (selectedItem!.zone == zone) {
       await api.removePlayerItems(player!, selectedItem!);
       changePage(Page.playerRepo);

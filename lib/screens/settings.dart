@@ -16,10 +16,9 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        height: 100,
+        height: 75,
         child: Column(
           children: [
-            const Text('Settings'),
             ElevatedButton(
               onPressed: () {
                 controller.removeBearerToken();
