@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ua_app_secu/api.dart';
 import 'package:ua_app_secu/controllers/scanner.dart';
 import 'package:ua_app_secu/models/entrance_player.dart';
+import 'package:ua_app_secu/screens/blank.dart';
 import 'package:ua_app_secu/screens/qrcode.dart';
 import 'package:ua_app_secu/screens/ticket_player.dart';
 
@@ -24,10 +25,17 @@ class EntranceController extends GetxController implements ScannerController {
 
   void changePage(int newIndex) {
     selectedIndex = newIndex;
-    currentPage = selectedIndex == 0
-        ? const QRCode<EntranceController>(
-            text: 'LE BILLET D\'UN JOUEUR', title: "SCAN ENTRÉE")
-        : PlayerTicket(entrancePlayer: entrancePlayer!);
+    switch (selectedIndex) {
+      case 0:
+        currentPage = const QRCode<EntranceController>(
+            text: 'LE BILLET D\'UN JOUEUR', title: "SCAN ENTRÉE");
+        break;
+      case 1:
+        currentPage = PlayerTicket(entrancePlayer: entrancePlayer!);
+        break;
+      default:
+        currentPage = const Blank();
+    }
     update();
   }
 

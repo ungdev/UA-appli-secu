@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
-import 'package:ua_app_secu/controllers/repo.dart';
+import 'package:ua_app_secu/controllers/repo.dart' as repo;
 import 'package:ua_app_secu/controllers/settings.dart';
 import 'package:ua_app_secu/icons.dart';
 import 'package:ua_app_secu/screens/login.dart';
@@ -51,7 +51,7 @@ class _MainPage extends State<MainPageState> {
       GetBuilder<SettingsController>(
         builder: (tx) => tx.page,
       ),
-      GetBuilder<RepoController>(
+      GetBuilder<repo.RepoController>(
         builder: (tx) => tx.currentPage!,
       ),
       GetBuilder<EntranceController>(
@@ -69,7 +69,7 @@ class _MainPage extends State<MainPageState> {
 
   @override
   Widget build(BuildContext context) {
-    RepoController repoController = Get.put(RepoController());
+    repo.RepoController repoController = Get.put(repo.RepoController());
     EntranceController entranceController = Get.put(EntranceController());
     SettingsController settingsController = Get.put(SettingsController());
 
@@ -91,6 +91,23 @@ class _MainPage extends State<MainPageState> {
                   currentIndex: selectedPageIndex,
                   onTap: (index) {
                     setState(() {
+                      if (index != 1 && selectedPageIndex == 1) {
+                        if (repoController.selectedPage ==
+                                repo.Page.playerQRCode ||
+                            repoController.selectedPage ==
+                                repo.Page.playerRepoAdd ||
+                            repoController.selectedPage ==
+                                repo.Page.playerRepoRemove) {
+                          repoController.changePage(repo.Page.blank);
+                        }
+                      }
+
+                      if (index != 2 && selectedPageIndex == 2) {
+                        if (entranceController.selectedIndex == 0) {
+                          entranceController.changePage(2);
+                        }
+                      }
+
                       selectedPageIndex = index;
                       pageController!.animateToPage(index,
                           duration: const Duration(milliseconds: 300),

@@ -7,6 +7,7 @@ import 'package:ua_app_secu/controllers/scanner.dart';
 import 'package:ua_app_secu/models/item.dart';
 import 'package:ua_app_secu/models/item_type.dart';
 import 'package:ua_app_secu/models/log.dart';
+import 'package:ua_app_secu/screens/blank.dart';
 import 'package:ua_app_secu/screens/repo_items.dart';
 import 'package:ua_app_secu/screens/repo_logs.dart';
 import 'package:ua_app_secu/screens/qrcode.dart';
@@ -20,6 +21,7 @@ enum Page {
   playerRepoAdd,
   playerRepoRemove,
   playerLogs,
+  blank
 }
 
 class RepoController extends GetxController implements ScannerController {
@@ -98,6 +100,9 @@ class RepoController extends GetxController implements ScannerController {
         break;
       case Page.playerLogs:
         currentPage = LogsRepo(logs: logs);
+        break;
+      case Page.blank:
+        currentPage = const Blank();
         break;
     }
 
