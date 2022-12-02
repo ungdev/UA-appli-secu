@@ -56,8 +56,8 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   void initState() {
     super.initState();
     // In case of page change, wait a bit before starting the camera
-    Future.delayed(const Duration(milliseconds: 500), () {
-      scannerController.start();
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      await scannerController.start();
     });
   }
 
