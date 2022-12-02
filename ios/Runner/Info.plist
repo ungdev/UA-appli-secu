@@ -51,5 +51,6 @@
 		<false/>
 		<key>NSCameraUsageDescription</key>
 		<string>Camera is used to scan QR codes</string>
+		<key>ITSAppUsesNonExemptEncryption</key><false/>
 	</dict>
 </plist>

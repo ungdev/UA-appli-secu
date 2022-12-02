@@ -184,4 +184,8 @@ class RepoController extends GetxController implements ScannerController {
       borderRadius: 20,
     );
   }
+
+  String repoItemTypesFromIdToName(String id) {
+    return repoItemTypes.firstWhere((element) => element.id == id).name;
+  }
 }

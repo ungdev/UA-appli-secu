@@ -35,9 +35,10 @@ class _LoginPageState extends State<LoginPage> {
             Center(
               child: Image.asset(
                 'assets/img/logo.png',
-                width: 200,
+                width: 150,
               ),
             ),
+            const SizedBox(height: 20),
             const Text(
               "Rebonjour.",
               style: TextStyle(
