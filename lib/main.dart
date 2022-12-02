@@ -109,6 +109,16 @@ class _MainPage extends State<MainPageState> {
                       }
 
                       selectedPageIndex = index;
+
+                      if (index == 1 &&
+                          repoController.selectedPage == repo.Page.blank) {
+                        repoController.changePage(repo.Page.playerQRCode);
+                      }
+
+                      if (index == 2 && entranceController.selectedIndex == 2) {
+                        entranceController.changePage(0);
+                      }
+
                       pageController!.animateToPage(index,
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeInOut);
