@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.uttnetgroup.uttarena.secu">
    <application
-        android:label="ua_app_secu"
+        android:label="Sec'UA"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

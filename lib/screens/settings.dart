@@ -24,6 +24,9 @@ class _SettingsState extends State<Settings> {
               onPressed: () {
                 controller.removeBearerToken();
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
               child: const Text('Déconnexion'),
             ),
           ],

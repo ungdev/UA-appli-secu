@@ -90,13 +90,15 @@ class RepoController extends GetxController implements ScannerController {
         currentPage = const ItemsRepo();
         break;
       case Page.playerRepoAdd:
-        currentPage = const QRCode<RepoController>(
-            text: 'L\'EMPLACEMENT DE DESTINATION', title: "AJOUTER UN OBJET");
+        currentPage = QRCode<RepoController>(
+            text: 'L\'EMPLACEMENT DE DESTINATION',
+            title:
+                "AJOUTER UN ${repoItemTypes[selectedItemType].name.toUpperCase()}");
         break;
       case Page.playerRepoRemove:
         currentPage = QRCode<RepoController>(
             text: 'L\'EMPLACEMENT DE RETRAIT',
-            title: "ENLEVER ${selectedItem!.zone.toUpperCase()}");
+            title: "RETRAIT ${selectedItem!.zone}");
         break;
       case Page.playerLogs:
         currentPage = LogsRepo(logs: logs);
@@ -159,7 +161,7 @@ class RepoController extends GetxController implements ScannerController {
     changePage(Page.playerItems);
   }
 
-  Future<void> addItemToRepo(zone) async {
+  Future<void> addItemToRepo(String zone) async {
     List<Item> items = [
       Item(id: '', type: repoItemTypes[selectedItemType].id, zone: zone),
     ];
@@ -167,7 +169,12 @@ class RepoController extends GetxController implements ScannerController {
     changePage(Page.playerRepo);
   }
 
-  Future<void> removeItemFromRepo(zone) async {
+  Future<void> removeItemFromRepo(String zone) async {
+    if (zone.contains('Zone')) {
+      showError("Une zone doit commencer par 'Zone'");
+      return;
+    }
+
     if (selectedItem!.zone == zone) {
       await api.removePlayerItems(player!, selectedItem!);
       changePage(Page.playerRepo);

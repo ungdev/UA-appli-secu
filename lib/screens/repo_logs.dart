@@ -28,14 +28,24 @@ class _LogsRepoState extends State<LogsRepo> {
                     elevation: 10,
                     child: ListTile(
                       title: Text(
-                          '${widget.logs![index].itemType} par ${widget.logs![index].agent.firstname} ${widget.logs![index].agent.lastname}'),
+                          '${controller.repoItemTypesFromIdToName(widget.logs![index].itemType)} ${widget.logs![index].action == 'added' ? 'déposé' : 'ajouté'} par ${widget.logs![index].agent.firstname} ${widget.logs![index].agent.lastname}'),
                       subtitle: Text(
                         DateTime.parse(widget.logs![index].timestamp)
                             .toString(),
                       ),
+                      leading: widget.logs![index].action == 'added'
+                          ? const Icon(
+                              Icons.add_circle_outline_rounded,
+                              color: Colors.green,
+                            )
+                          : const Icon(
+                              Icons.remove_circle_outline_rounded,
+                              color: Colors.red,
+                            ),
                       textColor: widget.logs![index].action == 'added'
                           ? Colors.green
                           : Colors.red,
+                      horizontalTitleGap: 2,
                     ),
                   );
                 },

@@ -44,9 +44,6 @@ class Api {
   Future<Map<String, dynamic>?> post(
       String url, String? bearerToken, String body,
       {expectedCode = 200}) async {
-    http.post(Uri.parse(baseUrl + url),
-        headers: getHeaders(bearerToken), body: body);
-
     return http
         .post(Uri.parse(baseUrl + url),
             headers: getHeaders(bearerToken), body: body)
@@ -72,12 +69,14 @@ class Api {
       RepoController().showError('Une erreur s\'est produite');
       return null;
     }
-    Map<String, dynamic> body = jsonDecode(response.body);
+
     if (response.statusCode == expectedCode) {
-      if (response.body == "{}") return null;
-      return body;
+      if (response.body == "{}" || response.body == "") {
+        return jsonDecode('{ "success": true }');
+      }
+      return jsonDecode(response.body);
     } else {
-      RepoController().showError(body['error']);
+      RepoController().showError(jsonDecode(response.body)['error']);
       return null;
     }
   }
@@ -107,8 +106,7 @@ class Api {
   Future<Map<String, dynamic>?> removePlayerItems(
       Player player, Item item) async {
     return await delete(
-        "/admin/repo/user/${player.id}/items/${item.id}", getBearerToken(),
-        expectedCode: 201);
+        "/admin/repo/user/${player.id}/items/${item.id}", getBearerToken());
   }
 
   Future<List<Log>?> getLogs(Player player) async {

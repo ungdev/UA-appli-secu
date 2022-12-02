@@ -111,14 +111,14 @@ class _PlayerTicketState extends State<PlayerTicket> {
                 onPressed: () {
                   controller.changePage(0);
                 },
-                child: const Text('RECOMMENCER'),
+                child: const Text('SCANNER UN AUTRE BILLET'),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  controller.changePage(0);
-                },
-                child: const Text('VALIDER'),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     controller.changePage(0);
+              //   },
+              //   child: const Text('VALIDER'),
+              // ),
             ],
           ),
         ],

@@ -25,7 +25,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   Color _borderColor = Colors.white;
   bool buttonHolded = false;
   bool display = false;
-  var lastScan = DateTime.now();
+  var lastScan = DateTime.now().subtract(const Duration(seconds: 3));
 
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
@@ -58,7 +58,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
     super.initState();
     scannerController.stop();
     // In case of page change, wait a bit before starting the camera
-    Future.delayed(const Duration(milliseconds: 500), () async {
+    Future.delayed(const Duration(milliseconds: 300), () async {
       await scannerController.start();
       setState(() {
         display = true;
@@ -93,7 +93,7 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
                             .difference(DateTime.now())
                             .inMilliseconds
                             .abs() >
-                        1500) {
+                        2000) {
                       lastScan = DateTime.now();
                       if (qrcode.rawBytes == null) {
                         sendError('Erreur lors de la lecture du QRCode');
