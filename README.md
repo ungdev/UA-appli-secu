@@ -14,7 +14,7 @@ Download Flutter SDK from [here](https://flutter.dev/docs/get-started/install)
 
 ## How to update app for next year
 
-1. Update the `assets/img/logo.png` file
+1. Update the `assets/img/logo.png` and `assets/img/icon.jpg` files
 2. Run the command `flutter pub run flutter_native_splash:create`
 3. Run the command `flutter pub run flutter_launcher_icons`
 4. Update the theme colors in `lib/theme.dart`
