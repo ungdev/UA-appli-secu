@@ -20,6 +20,10 @@ class _ItemsRepoState extends State<ItemsRepo> {
     isSelected = List<bool>.filled(controller.repoItemTypes.length, false);
   }
 
+  // TODO - => Ajout de feature possible, permettre de quantifier combien d'objets ajouter dans le repo
+  //  (penser à scanner plusieurs fois des qrcode pour bien assigner la bonne zone à chaque produit, si plusieurs)
+  //  => A voir sous forme de liste FIFO avec un bouton + en haut pour ajouter dans la liste et des boutons - pour retirer les produits
+
   @override
   Widget build(BuildContext context) {
     // Item List of PC and Peripherals to click on
