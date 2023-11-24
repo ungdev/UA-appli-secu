@@ -15,6 +15,10 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
     bearerToken = GetStorage().read('token');
+  }
+
+  @override
+  void onReady() {
     api.getScanCount().then((scanCount) {
       if(scanCount != null &&
           scanCount.containsKey("alreadyScanned") &&
