@@ -86,7 +86,6 @@ class RepoController extends GetxController implements ScannerController {
       case Page.playerRepo:
         await refreshPlayer();
         if (player != null) currentPage = PlayerRepo(player: player!);
-        null;
 
         break;
       case Page.playerItems:
