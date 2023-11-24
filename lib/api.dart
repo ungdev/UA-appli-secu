@@ -122,4 +122,8 @@ class Api {
     return await post("/admin/auth/login", null,
         jsonEncode({"login": login, "password": password}));
   }
+
+  Future<Map<String, dynamic>?> getScanCount() async {
+    return await get("/admin/scan", getBearerToken());
+  }
 }
