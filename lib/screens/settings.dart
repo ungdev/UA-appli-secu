@@ -33,18 +33,26 @@ class _SettingsState extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                        margin: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-                        child: Text("Total de billets : \t 100")
+                      margin: const EdgeInsets.only(right: 15, top: 5, bottom: 5),
+                      child: GetBuilder<SettingsController>(
+                        builder: (_) {
+                          return Text("Total de billets : \t ${controller.totalToScan}");
+                        },
+                      )
                     ),
                     Container(
-                      margin: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
-                      child: Text("Billets scannés : \t 10")
+                      margin: const EdgeInsets.only(right: 15, top: 5, bottom: 5),
+                      child: GetBuilder<SettingsController>(
+                        builder: (_) {
+                          return Text("Billets scannés : \t ${controller.alreadyScanned}");
+                        },
+                      )
                     )
                   ],
                 ),
                 IconButton(
                   onPressed: () {
-
+                    controller.updateScanCount();
                   },
                   icon: const Icon(Icons.refresh))
               ],
