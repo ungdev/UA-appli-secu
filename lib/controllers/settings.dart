@@ -51,7 +51,7 @@ class SettingsController extends GetxController {
           scanCount.containsKey("alreadyScanned") &&
           scanCount.containsKey("totalToScan")) {
 
-        if(alreadyScanned != scanCount["alreadyScanned"] &&
+        if(alreadyScanned != scanCount["alreadyScanned"] ||
             totalToScan != scanCount["totalToScan"]) {
           alreadyScanned = scanCount["alreadyScanned"];
           totalToScan = scanCount["totalToScan"];
