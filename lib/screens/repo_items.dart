@@ -72,6 +72,11 @@ class _ItemsRepoState extends State<ItemsRepo> {
                               counterText: '',
                               border: OutlineInputBorder(),
                             ),
+                            onTapOutside: (event) {
+                              if(_textFieldControllers[index].text.isEmpty){
+                                _textFieldControllers[index].text = "0";
+                              }
+                            },
                           ),
                         ),
                         IconButton(
