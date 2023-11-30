@@ -110,6 +110,10 @@ class _MainPage extends State<MainPageState> {
 
                       selectedPageIndex = index;
 
+                      if(index == 0){
+                        settingsController.updateScanCount();
+                      }
+
                       if (index == 1 &&
                           repoController.selectedPage == repo.Page.blank) {
                         repoController.changePage(repo.Page.playerQRCode);
