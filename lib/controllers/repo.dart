@@ -56,7 +56,7 @@ class RepoController extends GetxController implements ScannerController {
     ),
   ];
   // Selected Items Type
-  List<int> selectedItemsType = <int>[];
+  List<int> itemsTypeQuantities = <int>[];
   // Select Item
   Item? selectedItem;
   // Logs
@@ -66,7 +66,7 @@ class RepoController extends GetxController implements ScannerController {
   void onInit() {
     super.onInit();
 
-    selectedItemsType = List<int>.filled(repoItemTypes.length, 0);
+    itemsTypeQuantities = List<int>.filled(repoItemTypes.length, 0);
 
     scannerController = MobileScannerController(
       facing: CameraFacing.back,
@@ -89,7 +89,7 @@ class RepoController extends GetxController implements ScannerController {
 
         break;
       case Page.playerItems:
-        selectedItemsType = List<int>.filled(repoItemTypes.length, 0);
+        itemsTypeQuantities = List<int>.filled(repoItemTypes.length, 0);
 
         currentPage = const ItemsRepo();
         break;
@@ -145,7 +145,7 @@ class RepoController extends GetxController implements ScannerController {
   }
 
   void selectItemsType(List<int> index) {
-    selectedItemsType = index;
+    itemsTypeQuantities = index;
     changePage(Page.playerRepoAdd);
   }
 
@@ -166,9 +166,9 @@ class RepoController extends GetxController implements ScannerController {
   Future<void> addItemToRepo(String zone) async {
     List<Item> items = [];
 
-    for (int i = 0; i < selectedItemsType.length; i++) {
-      int value = selectedItemsType[i];
-      if (value == 1) {
+    for (int i = 0; i < itemsTypeQuantities.length; i++) {
+      int qty = itemsTypeQuantities[i];
+      for(int j = 0; j < qty; j++) {
         items.add(Item(
           id: '',
           type: repoItemTypes[i].id,

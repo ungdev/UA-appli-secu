@@ -29,11 +29,7 @@ class _ItemsRepoState extends State<ItemsRepo> {
     _textFieldControllers.forEach((controller) { controller.dispose(); });
   }
 
-  // TODO - => Ajout de feature possible, permettre de quantifier combien d'objets ajouter dans le repo
-  //  (penser à scanner plusieurs fois des qrcode pour bien assigner la bonne zone à chaque produit, si plusieurs)
-  //  => A voir sous forme de liste FIFO avec un bouton + en haut pour ajouter dans la liste et des boutons - pour retirer les produits
-
-  // besoin ? avoir l'inventaire d'une zone
+  // TODO - besoin ? avoir l'inventaire d'une zone
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +105,7 @@ class _ItemsRepoState extends State<ItemsRepo> {
                   ),
                 ),
                 onPressed: () {
+                  controller.itemsTypeQuantities = _textFieldControllers.map((tfControl) => int.parse(tfControl.text)).toList(growable: false);
                   controller.changePage(repo.Page.playerRepoAdd);
                 },
                 child: const Text('Valider'),
