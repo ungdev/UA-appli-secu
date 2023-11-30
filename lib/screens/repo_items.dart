@@ -12,17 +12,28 @@ class ItemsRepo extends StatefulWidget {
 class _ItemsRepoState extends State<ItemsRepo> {
   repo.RepoController controller = Get.find();
 
-  List<bool> isSelected = <bool>[];
+  List<TextEditingController> _textFieldControllers = <TextEditingController>[];
 
   @override
   void initState() {
     super.initState();
-    isSelected = List<bool>.filled(controller.repoItemTypes.length, false);
+    _textFieldControllers = List<TextEditingController>.generate(
+        controller.repoItemTypes.length,
+        (int index) => new TextEditingController(text: "0"),
+        growable: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textFieldControllers.forEach((controller) { controller.dispose(); });
   }
 
   // TODO - => Ajout de feature possible, permettre de quantifier combien d'objets ajouter dans le repo
   //  (penser à scanner plusieurs fois des qrcode pour bien assigner la bonne zone à chaque produit, si plusieurs)
   //  => A voir sous forme de liste FIFO avec un bouton + en haut pour ajouter dans la liste et des boutons - pour retirer les produits
+
+  // besoin ? avoir l'inventaire d'une zone
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +48,49 @@ class _ItemsRepoState extends State<ItemsRepo> {
               return Container(
                   margin: const EdgeInsets.only(bottom: 5),
                   decoration: BoxDecoration(
-                    color: isSelected[index]
-                        ? Theme.of(context).primaryColor.withOpacity(0.5)
-                        : Colors.transparent,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ListTile(
                     title: Text(controller.repoItemTypes[index].name),
                     subtitle: Text(controller.repoItemTypes[index].description),
-                    onTap: () {
-                      setState(() {
-                        isSelected[index] = !isSelected[index];
-                      });
-                      controller.selectedItemsType[index] =
-                          controller.selectedItemsType[index] == 1 ? 0 : 1;
-                    },
-                  ));
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove, color: Theme.of(context).primaryColor),
+                          onPressed: (){
+                            int itemCount = int.parse(_textFieldControllers[index].text);
+                            if(itemCount > 0) {
+                              _textFieldControllers[index].text = (itemCount-1).toString();
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          width: 60,
+                          child: TextField(
+                            controller: _textFieldControllers[index],
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            cursorColor: Theme.of(context).primaryColor,
+                            decoration: const InputDecoration(
+                              counterText: '',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.add, color: Theme.of(context).primaryColor),
+                          onPressed: (){
+                            int itemCount = int.parse(_textFieldControllers[index].text);
+                            if(itemCount < 99) {
+                              _textFieldControllers[index].text = (itemCount+1).toString();
+                            }
+                          },
+                        ),
+                      ],
+                    )
+                  )
+              );
             },
           ),
           Positioned(
