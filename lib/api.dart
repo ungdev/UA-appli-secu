@@ -119,7 +119,11 @@ class Api {
   }
 
   Future<Map<String, dynamic>?> login(String login, String password) async {
-    return await post("/auth/login", null,
+    return await post("/admin/auth/login", null,
         jsonEncode({"login": login, "password": password}));
+  }
+
+  Future<Map<String, dynamic>?> getScanCount() async {
+    return await get("/admin/scan", getBearerToken());
   }
 }

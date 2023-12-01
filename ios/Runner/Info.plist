@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Sec'UA</string>
+		<string>Turbosecu</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -51,6 +51,7 @@
 		<false/>
 		<key>NSCameraUsageDescription</key>
 		<string>Camera is used to scan QR codes</string>
-		<key>ITSAppUsesNonExemptEncryption</key><false/>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 	</dict>
 </plist>

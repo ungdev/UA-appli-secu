@@ -25,14 +25,11 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   Color _borderColor = Colors.white;
   bool buttonHolded = false;
   bool display = false;
-  var lastScan = DateTime.now().subtract(const Duration(seconds: 3));
 
   T controller = Get.find();
   MobileScannerController scannerController = MobileScannerController(
-    facing: CameraFacing.back,
-    detectionSpeed: DetectionSpeed.noDuplicates,
     formats: [BarcodeFormat.qrCode],
-    returnImage: false,
+    detectionTimeoutMs: 2000,
   );
 
   void sendError(String error) {
@@ -56,12 +53,13 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
   @override
   void initState() {
     super.initState();
-    scannerController.stop();
-    // In case of page change, wait a bit before starting the camera
-    Future.delayed(const Duration(milliseconds: 300), () async {
-      await scannerController.start();
-      setState(() {
-        display = true;
+    scannerController.stop().then((value) {
+      // In case of page change, wait a bit before starting the camera
+      Future.delayed(const Duration(milliseconds: 300), () async {
+        await scannerController.start();
+        setState(() {
+          display = true;
+        });
       });
     });
   }
@@ -85,26 +83,18 @@ class _QRCodeState<T extends ScannerController> extends State<QRCode<T>>
             MobileScanner(
               controller: scannerController,
               onDetect: (capture) async {
+                HapticFeedback.vibrate();
                 if (!widget.enableButton || buttonHolded) {
                   final List<Barcode> barcodes = capture.barcodes;
                   debugPrint('Barcodes: ${barcodes.length}');
                   for (final qrcode in barcodes) {
-                    if (lastScan
-                            .difference(DateTime.now())
-                            .inMilliseconds
-                            .abs() >
-                        2000) {
-                      lastScan = DateTime.now();
-                      if (qrcode.rawBytes == null) {
-                        sendError('Erreur lors de la lecture du QRCode');
-                      } else {
-                        code = qrcode.rawBytes;
-                        debugPrint(
-                            'Barcode detected: ${String.fromCharCodes(code!)}');
-                        await controller.onScan(code!);
-                      }
+                    if (qrcode.rawBytes == null) {
+                      sendError('Erreur lors de la lecture du QRCode');
                     } else {
-                      debugPrint('Scanning too fast');
+                      code = qrcode.rawBytes;
+                      debugPrint(
+                          'Barcode detected: ${String.fromCharCodes(code!)}');
+                      await controller.onScan(code!);
                     }
                   }
                 }
