@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
 import 'package:ua_app_secu/models/entrance_player.dart';
 
@@ -14,6 +15,22 @@ class PlayerTicket extends StatefulWidget {
 
 class _PlayerTicketState extends State<PlayerTicket> {
   EntranceController controller = Get.find();
+  late CameraController _camController;
+
+  @override
+  void initState() {
+    super.initState();
+    availableCameras().then((value) {
+      _camController = CameraController(value[0], ResolutionPreset.low, enableAudio: false);
+      _camController.initialize();
+    });
+  }
+
+  @override
+  void dispose() {
+    _camController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +41,22 @@ class _PlayerTicketState extends State<PlayerTicket> {
         children: [
           // Back icon
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 onPressed: () {
                   controller.changePage(0);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.flashlight_on_rounded),
+                onPressed: () {
+                  if(_camController.value.isInitialized) {
+                    _camController.setFlashMode(
+                        _camController.value.flashMode != FlashMode.torch ?
+                        FlashMode.torch : FlashMode.off);
+                  }
                 },
               ),
             ],
@@ -113,12 +141,6 @@ class _PlayerTicketState extends State<PlayerTicket> {
                 },
                 child: const Text('SCANNER UN AUTRE BILLET'),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     controller.changePage(0);
-              //   },
-              //   child: const Text('VALIDER'),
-              // ),
             ],
           ),
         ],
