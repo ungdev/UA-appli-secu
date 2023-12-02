@@ -16,13 +16,16 @@ class PlayerTicket extends StatefulWidget {
 class _PlayerTicketState extends State<PlayerTicket> {
   EntranceController controller = Get.find();
   late CameraController _camController;
+  bool _isFlashlightOn = false;
 
   @override
   void initState() {
     super.initState();
-    availableCameras().then((value) {
+    availableCameras().then((value) async {
       _camController = CameraController(value[0], ResolutionPreset.low, enableAudio: false);
-      _camController.initialize();
+      await _camController.initialize();
+      await _camController.setFlashMode(FlashMode.off);
+      _isFlashlightOn = false;
     });
   }
 
@@ -50,13 +53,19 @@ class _PlayerTicketState extends State<PlayerTicket> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.flashlight_on_rounded),
+                icon: Icon(_isFlashlightOn ? Icons.flashlight_off_rounded : Icons.flashlight_on_rounded),
                 onPressed: () {
-                  if(_camController.value.isInitialized) {
-                    _camController.setFlashMode(
-                        _camController.value.flashMode != FlashMode.torch ?
-                        FlashMode.torch : FlashMode.off);
-                  }
+                  setState(() {
+                    if(_camController.value.isInitialized) {
+                      if(_camController.value.flashMode != FlashMode.torch) {
+                        _camController.setFlashMode(FlashMode.torch);
+                        _isFlashlightOn = true;
+                      } else{
+                        _camController.setFlashMode(FlashMode.off);
+                        _isFlashlightOn = false;
+                      }
+                    }
+                  });
                 },
               ),
             ],
