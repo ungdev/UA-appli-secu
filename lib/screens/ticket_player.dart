@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
 import 'package:ua_app_secu/controllers/entrance.dart';
 import 'package:ua_app_secu/models/entrance_player.dart';
 
@@ -14,6 +15,25 @@ class PlayerTicket extends StatefulWidget {
 
 class _PlayerTicketState extends State<PlayerTicket> {
   EntranceController controller = Get.find();
+  late CameraController _camController;
+  bool _isFlashlightOn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    availableCameras().then((value) async {
+      _camController = CameraController(value[0], ResolutionPreset.low, enableAudio: false);
+      await _camController.initialize();
+      await _camController.setFlashMode(FlashMode.off);
+      _isFlashlightOn = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    _camController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +44,28 @@ class _PlayerTicketState extends State<PlayerTicket> {
         children: [
           // Back icon
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 onPressed: () {
                   controller.changePage(0);
+                },
+              ),
+              IconButton(
+                icon: Icon(_isFlashlightOn ? Icons.flashlight_off_rounded : Icons.flashlight_on_rounded),
+                onPressed: () {
+                  setState(() {
+                    if(_camController.value.isInitialized) {
+                      if(_camController.value.flashMode != FlashMode.torch) {
+                        _camController.setFlashMode(FlashMode.torch);
+                        _isFlashlightOn = true;
+                      } else{
+                        _camController.setFlashMode(FlashMode.off);
+                        _isFlashlightOn = false;
+                      }
+                    }
+                  });
                 },
               ),
             ],
@@ -113,12 +150,6 @@ class _PlayerTicketState extends State<PlayerTicket> {
                 },
                 child: const Text('SCANNER UN AUTRE BILLET'),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     controller.changePage(0);
-              //   },
-              //   child: const Text('VALIDER'),
-              // ),
             ],
           ),
         ],
